@@ -1,0 +1,162 @@
+<!doctype html><html lang="ru">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>OLLIN Premium Bar — editorial demo</title>
+  <style>
+    *{box-sizing:border-box}
+
+    html{scroll-behavior:auto}
+    body{
+      margin:0;
+      color:#253344;
+      background:#f5f6f7;
+      font:17px/1.7 system-ui,Arial,sans-serif
+    }
+
+    header{
+      background:white;
+      border-bottom:1px solid #dde2e8;
+      padding:18px max(5vw,20px);
+      font-weight:800;
+      letter-spacing:.04em
+    }
+
+    header small{
+      float:right;
+      color:#75818c;font-weight:400
+    }
+
+      .article{
+        width:min(850px,calc(100% - 36px));
+        margin:0 auto;padding:60px 0
+      }
+
+    h1{
+      font-size:clamp(32px,5vw,56px);
+      line-height:1.1;
+      margin:0 0 25px
+    }
+
+    h2{
+      line-height:1.2
+    }
+
+    p{color:#55616c}
+
+    .box{
+      height:180px;
+      background:linear-gradient(115deg,#d6e1e7,#e8e5dc);
+      border-radius:14px;
+      margin:25px 0
+    }
+
+    .label{
+      color:#69809a;
+      font-size:12px;
+      text-transform:uppercase;
+      font-weight:bold;
+      letter-spacing:.16em}
+
+
+    .post{background:white}
+    .post .article{padding-bottom:140px}
+
+    footer{
+      text-align:center;
+      padding:40px;
+      color:#8895a3
+    }
+    @media(max-width:520px){
+      .pin{padding:4px 8px}
+      .frame{height:min(81svh,calc((100vw - 16px) * 16 / 9))}
+      .article{padding:42px 0}.hint{font-size:11px}
+    }
+    @media(prefers-reduced-motion:reduce){
+      html{scroll-behavior:auto}}
+
+  </style>
+
+<style>
+  body{padding-bottom:110px}
+  .ollin-frame{position:fixed;left:0;bottom:0;width:100%;height:100px;border:0;z-index:1000;background:transparent;display:block}
+  .ollin-reset{position:fixed;right:16px;top:16px;z-index:1001;background:#fff;border:1px solid #d6dde2;border-radius:30px;padding:8px 17px;color:#253344;font:500 13px system-ui,Arial,sans-serif;box-shadow:0 2px 9px #0001;cursor:pointer}
+</style>
+</head>
+
+
+
+    <body>
+      <header>DEMO · EDITORIAL <small>OLLIN Premium Bar / Proof of concept</small></header>
+      <main>
+        <article class="article">
+          <div class="label">Демонстрационная статья</div>
+          <h1>Как реклама становится частью истории</h1>
+          <p>Прокручивайте страницу, как обычную статью. Внизу экрана закреплён OLLIN Premium Bar: жесты прокрутки последовательно открывают продукты, а после финального кадра запускают блик по ленте.</p><div class="box"></div><h2>Контент до рекламного размещения</h2><p>Эта часть страницы имитирует статью настоящего сайта. Рекламный модуль постоянно остаётся внизу окна и не препятствует чтению материала.</p>
+          <p>На мобильных экранах композиция баннера масштабируется, а фоновая полоса занимает всю ширину окна.</p>
+
+
+<div class="label">Красота и уход</div>
+
+<h2>Укладка, которая подчеркивает ваш стиль</h2>
+
+<p>Повседневная укладка начинается с простого желания: выглядеть так, как вам нравится. Иногда хочется добавить волосам объем, иногда подчеркнуть отдельные пряди или сохранить гладкую форму. Для каждого образа можно подобрать свой подход, не усложняя привычный уход.</p>
+
+<p>Хорошая прическа не обязательно требует много времени. Часто достаточно нескольких точных движений и подходящего средства, чтобы волосы выглядели аккуратно и сохраняли естественную подвижность. Главное - учитывать их длину, текстуру и желаемый результат.</p>
+
+<h2>Объем, форма и естественность</h2>
+
+<p>Перед укладкой определите, какой эффект нужен именно сегодня. Для мягкого объема можно использовать мусс, для выделения отдельных прядей - воск, а для завершающей фиксации - лак. Эти средства решают разные задачи и помогают расставить нужные акценты.</p>
+
+
+<p>В нижнем рекламном блоке представлены средства для разных этапов укладки. Продолжайте читать и прокручивать страницу: баннер будет постепенно собирать композицию.</p>
+
+        </article>
+<div class="post">
+          <article class="article">
+            <div class="label">Продолжение материала</div>
+            <h2>Вы снова прокручиваете страницу</h2>
+            <p>Страница продолжает свободно прокручиваться. Сам баннер разворачивает сценарий только вперёд и после финального кадра запускает блик при следующих жестах.</p>
+            <div class="box"></div>
+            <p>Для тестирования баннер подключён отдельным iframe, а демо-страница передаёт ему сигналы прокрутки. Исходный код баннера находится в отдельной папке.</p>
+
+            <h2>Последние штрихи вашего образа</h2>
+
+<p>Когда основная форма готова, посмотрите на прическу целиком. Иногда достаточно поправить несколько прядей у лица, немного приподнять волосы у корней или смягчить слишком четкую линию. Именно небольшие детали делают укладку индивидуальной.</p>
+
+<p>Не стремитесь добиться абсолютной симметрии. Легкая небрежность может выглядеть уместно и естественно, особенно если волосы сохраняют движение. Выбирайте степень аккуратности под настроение, одежду и планы на день.</p>
+
+<h2>Фиксация без лишнего количества средства</h2>
+
+<p>Для завершения укладки используйте средство с подходящей степенью фиксации. Если важно сохранить мягкость и подвижность, начинайте с легкого нанесения. Для более четкой формы уделите внимание отдельным участкам, следуя рекомендациям на упаковке продукта.</p>
+
+<p>Воск удобнее наносить небольшими порциями, предварительно распределив его между ладонями или пальцами. Затем можно выделить кончики, подчеркнуть текстуру или поправить отдельные пряди. Добавляйте продукт постепенно, оценивая результат после каждого движения.</p>
+
+<p>Лак помогает завершить образ и зафиксировать выбранную форму. Наносите его с расстояния, указанного производителем, и избегайте избыточного количества на одном участке. Перед выходом дайте средству высохнуть.</p>
+
+          </article>
+        </div>
+      </main>
+      <footer>OLLIN Premium Bar · демонстрационная интеграция</footer>
+<button type="button" class="ollin-reset" id="reset">Сброс анимации</button>
+<iframe class="ollin-frame" id="ollin-ad" src="./banner/index.html" title="OLLIN Premium Bar" scrolling="no"></iframe>
+<script>
+(()=>{
+  const frame=document.getElementById('ollin-ad');
+  function send(type,extra={}){frame.contentWindow?.postMessage({type,...extra},'*')}
+  let touchStart=null,touchSent=false;
+  window.addEventListener('wheel', e=>{
+    send('ollin-wheel',{deltaY:e.deltaY*(e.deltaMode===1?16:e.deltaMode===2?innerHeight:1)});
+  },{passive:true});
+  window.addEventListener('touchstart',e=>{
+    touchStart={x:e.touches[0].clientX,y:e.touches[0].clientY};touchSent=false;
+  },{passive:true});
+  window.addEventListener('touchmove',e=>{
+    if(!touchStart||touchSent)return;
+    const dx=e.touches[0].clientX-touchStart.x,dy=e.touches[0].clientY-touchStart.y;
+    if(Math.abs(dy)>35&&Math.abs(dy)>Math.abs(dx)){touchSent=true;send('ollin-swipe')}
+  },{passive:true});
+  window.addEventListener('touchend',()=>{touchStart=null},{passive:true});
+  document.getElementById('reset').addEventListener('click',()=>send('ollin-reset'));
+})();
+</script>
+</body></html>
