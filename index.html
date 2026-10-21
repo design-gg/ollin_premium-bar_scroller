@@ -159,57 +159,27 @@
 (()=>{
   const frame=document.getElementById('ollin-ad');
   function send(type,extra={}){frame.contentWindow?.postMessage({type,...extra},'*')}
-  // Передаём прокрутку iframe, не блокируя прокрутку статьи.
-  window.addEventListener('wheel', e => {
-    const factor = e.deltaMode === 1 ? 16 : e.deltaMode === 2 ? innerHeight : 1;
-    // Усиливаем только сигнал десктопной прокрутки для порога внутри баннера.
-    send('ollin-wheel', {deltaY: e.deltaY * factor});
-  }, {passive: true});
-
-  // Один вертикальный жест = не более одного сигнала.
-  // На touchend есть запасная проверка, если touchmove пришло редко.
-  let touchStart = null;
-  let touchLast = null;
-  let touchSent = false;
-
-  function trySendSwipe(point) {
-    if (!touchStart || !point || touchSent) return;
-    const dx = point.x - touchStart.x;
-    const dy = point.y - touchStart.y;
-    if (Math.abs(dy) >= 24 && Math.abs(dy) > Math.abs(dx) * 1.2) {
-      touchSent = true;
-      send('ollin-swipe');
+  let touchStart=null,touchSent=false;
+  window.addEventListener('wheel', e=>{
+    send('ollin-wheel',{deltaY:e.deltaY*(e.deltaMode===1?16:e.deltaMode===2?innerHeight:1)});
+  },{passive:true});
+  window.addEventListener('touchstart',e=>{
+    touchStart={x:e.touches[0].clientX,y:e.touches[0].clientY};touchSent=false;
+  },{passive:true});
+  window.addEventListener('touchmove',e=>{
+    if(!touchStart||touchSent)return;
+    const dx=e.touches[0].clientX-touchStart.x,dy=e.touches[0].clientY-touchStart.y;
+    if(Math.abs(dy)>=24&&Math.abs(dy)>Math.abs(dx)){touchSent=true;send('ollin-swipe')}
+  },{passive:true});
+  window.addEventListener('touchend',e=>{
+    const t=e.changedTouches[0];
+    if(touchStart&&!touchSent&&t){
+      const dx=t.clientX-touchStart.x,dy=t.clientY-touchStart.y;
+      if(Math.abs(dy)>=24&&Math.abs(dy)>Math.abs(dx))send('ollin-swipe');
     }
-  }
-
-  window.addEventListener('touchstart', e => {
-    const touch = e.touches[0];
-    if (!touch) return;
-    touchStart = {x: touch.clientX, y: touch.clientY};
-    touchLast = touchStart;
-    touchSent = false;
-  }, {passive: true});
-
-  window.addEventListener('touchmove', e => {
-    const touch = e.touches[0];
-    if (!touch) return;
-    touchLast = {x: touch.clientX, y: touch.clientY};
-    trySendSwipe(touchLast);
-  }, {passive: true});
-
-  window.addEventListener('touchend', e => {
-    const touch = e.changedTouches[0];
-    if (touch) touchLast = {x: touch.clientX, y: touch.clientY};
-    trySendSwipe(touchLast);
-    touchStart = null;
-    touchLast = null;
-  }, {passive: true});
-
-  window.addEventListener('touchcancel', () => {
-    touchStart = null;
-    touchLast = null;
-  }, {passive: true});
-
+    touchStart=null;
+  },{passive:true});
+  window.addEventListener('touchcancel',()=>{touchStart=null;touchSent=false},{passive:true});
   document.getElementById('reset').addEventListener('click',()=>send('ollin-reset'));
 })();
 </script>
