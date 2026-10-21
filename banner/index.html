@@ -356,8 +356,8 @@
         tagEase: 'back.out(1.35)',
         logoDuration: 0.85,
         ribbonDuration: 0.85,
-        scrollThreshold: 52,
-        actionCooldown: 540
+        scrollThreshold: 20,
+        actionCooldown: 160
       };
 
       // 03. КООРДИНАТЫ И РАЗМЕРЫ — каждый кадр и устройство.
@@ -390,6 +390,7 @@
       let lastActionTime = 0;
       let lastWheelTime = 0;
       let scrollAcc = 0;
+      let queuedStep = false;
       let touchY = null;
       let touchX = null;
       let touchDone = false;
@@ -478,7 +479,15 @@
         stage = next;
         busy = true;
         bar.classList.add('story-started');
-        const tl = gsap.timeline({onComplete:() => {busy = false; currentTimeline = null;}});
+        const tl = gsap.timeline({onComplete: () => {
+          busy = false;
+          currentTimeline = null;
+          if (queuedStep) {
+            queuedStep = false;
+            lastActionTime = performance.now();
+            goToNextStage();
+          }
+        }});
         currentTimeline = tl;
 
         if (next === 1) {
@@ -508,6 +517,13 @@
         });
         addTagTransition(tl, next, .12);
       }
+      // Останавливаем анимацию маркировки
+      gsap.killTweensOf('.ad-disclosure');
+
+      // Возвращаем маркировку в скрытое состояние
+      gsap.set('.ad-disclosure', {
+          opacity: 0
+      });
 
       // 09. ПОКАЧИВАНИЕ ТОВАРОВ ПОСЛЕ ФИНАЛЬНОГО КАДРА.
       // Скролл запускает короткую волну слева направо.
@@ -540,7 +556,12 @@
       // 10. УПРАВЛЕНИЕ СКРОЛЛОМ И СВАЙПАМИ (включая iframe-сообщения).
       function advance() {
         const now = performance.now();
-        if (busy || now - lastActionTime < MOTION.actionCooldown) return;
+        if (busy) {
+          // Запоминаем один скролл, пришедший во время перехода.
+          queuedStep = true;
+          return;
+        }
+        if (now - lastActionTime < MOTION.actionCooldown) return;
         lastActionTime = now;
         goToNextStage();
       }
@@ -565,12 +586,16 @@
         stage = 0;
         busy = false;
         scrollAcc = 0;
+        queuedStep = false;
         lastActionTime = 0;
         bar.classList.remove('story-started', 'pulse');
         tag.textContent = '';
         tag.classList.remove('final');
         cta.classList.remove('visible');
         Object.values(products).forEach(el => el.classList.remove('visible'));
+        // Сбрасываем рекламную маркировку вместе с остальной анимацией.
+        gsap.killTweensOf('.ad-disclosure');
+        gsap.set('.ad-disclosure', { opacity: 0 });
         initialize();
       }
       window.addEventListener('wheel', processWheel, {passive:true});
