@@ -13,7 +13,7 @@
   <style>
     /* ================================================================
        01. БАЗОВЫЕ НАСТРОЙКИ
-       Высота баннера — 120 px. Фон прозрачный за пределами оформления.
+       Высота баннера — 100 px. Фон прозрачный за пределами оформления.
        ================================================================ */
     * {
       box-sizing: border-box;
@@ -37,7 +37,7 @@
       left:0;
       bottom:0;
       width:100%;
-      height:120px;
+      height:100px;
       z-index:1000;
       isolation:isolate;
       overflow:hidden;
@@ -47,16 +47,16 @@
     .bg{
       position:absolute;
       inset:0;
-      background:url('assets/bg_repeat.png') repeat-x 0 40px;
-      background-size:20px 80px;
+      background:url('assets/bg_repeat.png') repeat-x 0 42px;
+      background-size:20px 58px;
     }
     /* 04. РАБОЧАЯ ОБЛАСТЬ — центрированные 600 x 100 px. */
     .scene{
       position:absolute;
       left:50%;
       top:0;
-      width:720px;
-      height:120px;
+      width:600px;
+      height:100px;
       transform:translateX(-50%);
       overflow:hidden;
       pointer-events:none;
@@ -66,8 +66,8 @@
       position:absolute;
       left:150px;
       top:0;
-      width:500px;
-      height:71px;
+      width:444px;
+      height:100px;
       background:url('assets/ribbon.png') no-repeat center/contain;
       z-index:1;
       opacity:0;
@@ -80,9 +80,9 @@
       position:absolute;
       left:24px;
       top:auto;
-      bottom:12px;
+      bottom:10px;
       width:auto;
-      height:48px;
+      height:40px;
       z-index:3;
     }
 
@@ -148,18 +148,18 @@
        Анимация смены плашек находится в JS: updateTag(). */
     .tag{
       position:absolute;
-      left:330px;
-      top:40px;
+      left:290px;
+      top:34px;
       z-index:10;
       width:max-content;
-      max-width:250px;
-      padding:6px 25px;
+      max-width:220px;
+      padding:6px 20px;
       border-radius:6px;
       background:radial-gradient(circle at 50% 0%, #DCFCBB 0%, #9DEC4C 100%);
       color:#090909;
       font-family:"Commissioner",system-ui,sans-serif;
       font-weight:500;
-      font-size:21px;
+      font-size:18px;
       line-height:1.02;
       letter-spacing:-.02em;
       white-space:pre-line;
@@ -172,21 +172,21 @@
       box-shadow: inset 0 -1px 0 0 rgba(255, 255, 255, 0.5);
     }
     .tag.final {
-      top:28px;
-      font-size:20px;
+      top:18px;
+      font-size:17px;
     }
     /* 10. КНОПКА — размер 140 x 22 px, позиция, шрифт и пульсация. */
     .cta{
       position:absolute;
       right:12px;
-      top:62px;
+      top:58px;
       z-index:12;
       display:flex;
       align-items:center;
       gap:3px;
       padding:0 5px 2px 5px;
-      width:160px;
-      height:30px;
+      width:146px;
+      height:26px;
       justify-content:center;
       border-radius:22px;
       background:#fff;
@@ -195,7 +195,7 @@
       white-space:nowrap;
       font-family:"Commissioner",system-ui,sans-serif;
       font-weight:400;
-      font-size:17px;
+      font-size:15px;
       line-height:1;
       opacity:0;
       letter-spacing: -0.03em;
@@ -222,10 +222,10 @@
       pointer-events: auto;
     }
 
-    /* 12. РЕКЛАМНАЯ МАРКИРОВКА — справа внутри области 720 px. */
+    /* 12. РЕКЛАМНАЯ МАРКИРОВКА — справа внутри области 600 px. */
     .ad-disclosure{
       position:absolute;
-      right:max(16px, calc((100% - 720px)/2 + 16px));
+      right:max(16px, calc((100% - 600px)/2 + 16px));
       bottom:2px;
       z-index:35;
       pointer-events:none;
@@ -246,14 +246,11 @@
        Координаты товаров для мобильного находятся в JS: productPosition().
        ================================================================ */
     @media(max-width:600px){
-
       /* Лента не ограничивается шириной мобильной композиции. */
-      .premium-bar { height: 100px;}
-      .scene {width: 300px;  height: 100px; transform:translateX(-50%);overflow:visible}
-      .bg {background-position: 0 40px; background-size: 20px 60px;}
+      .scene{width:300px;transform:translateX(-50%);overflow:visible}
       .logo{height:30px;bottom:12px}
       .premium-bar.story-started .logo{left:10px}
-      .ribbon{left:15px; top:0; background-size: contain; }
+      .ribbon{left:35px;width:444px}
       .cta{display:none!important}
       /* Плашка: шрифт и отступы уменьшены до 80% от десктопа. */
       .tag{left:auto;right:16px;top:27px;max-width:185px;font-size:14.4px;padding:3.2px 16px;z-index:4}
@@ -314,7 +311,7 @@
       <!-- Плашка: содержимое и анимация задаются в JavaScript -->
       <div class="tag" id="tag"></div>
       <a class="cta" id="cta" href="#" aria-label="Смотреть товары">смотреть товары
-        <svg viewBox="0 0 20 15" fill="none" aria-hidden="true">
+        <svg viewBox="0 0 20 20" fill="none" aria-hidden="true">
           <path d="M3 10h13m-5-5 5 5-5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
       </a>
@@ -356,18 +353,18 @@
         tagEase: 'back.out(1.35)',
         logoDuration: 0.85,
         ribbonDuration: 0.85,
-        scrollThreshold: 20,
-        actionCooldown: 160
+        scrollThreshold: 52,
+        actionCooldown: 540
       };
 
       // 03. КООРДИНАТЫ И РАЗМЕРЫ — каждый кадр и устройство.
       // Все left/top/height указаны в px; rotate — в градусах.
       const FRAMES = {
         desktop: {
-          1: { thermo: {left:180, top:0, height:200, rotate:7} },
-          2: { thermo: {left:150, top:10, height:180, rotate:7}, mousse: {left:210, top:0, height:220, rotate:7} },
-          3: { thermo: {left:130, top:10, height:180, rotate:7}, mousse: {left:190, top:0, height:200, rotate:7}, wax: {left:220, top:65, height:85, rotate:7} },
-          4: { thermo: {left:180, top:11, height:110, rotate:0}, mousse: {left:220, top:22, height:100, rotate:0}, wax: {left:240, top:71, height:50, rotate:0}, spray: {left:236, top:2, height:117, rotate:0} }
+          1: { thermo: {left:170, top:0, height:160, rotate:7} },
+          2: { thermo: {left:140, top:5, height:150, rotate:7}, mousse: {left:190, top:0, height:180, rotate:7} },
+          3: { thermo: {left:110, top:5, height:150, rotate:7}, mousse: {left:160, top:0, height:175, rotate:7}, wax: {left:180, top:45, height:75, rotate:7} },
+          4: { thermo: {left:158, top:5, height:95, rotate:0}, mousse: {left:195, top:15, height:88, rotate:0}, wax: {left:220, top:58, height:42, rotate:0}, spray: {left:210, top:5, height:95, rotate:0} }
         },
         mobile: {
           1: { thermo: {left:95, top:0, height:150, rotate:7} },
@@ -390,7 +387,6 @@
       let lastActionTime = 0;
       let lastWheelTime = 0;
       let scrollAcc = 0;
-      let queuedStep = false;
       let touchY = null;
       let touchX = null;
       let touchDone = false;
@@ -398,7 +394,7 @@
       let hoverTimeline = null;
       let swayTimeline = null;
 
-      function isMobile() { return window.innerWidth <= 720; }
+      function isMobile() { return window.innerWidth <= 600; }
       function coordinates(step) { return FRAMES[isMobile() ? 'mobile' : 'desktop'][step]; }
       function fit() { scene.style.setProperty('--scale', Math.min(1, window.innerWidth / 300)); }
 
@@ -479,15 +475,7 @@
         stage = next;
         busy = true;
         bar.classList.add('story-started');
-        const tl = gsap.timeline({onComplete: () => {
-          busy = false;
-          currentTimeline = null;
-          if (queuedStep) {
-            queuedStep = false;
-            lastActionTime = performance.now();
-            goToNextStage();
-          }
-        }});
+        const tl = gsap.timeline({onComplete:() => {busy = false; currentTimeline = null;}});
         currentTimeline = tl;
 
         if (next === 1) {
@@ -517,13 +505,6 @@
         });
         addTagTransition(tl, next, .12);
       }
-      // Останавливаем анимацию маркировки
-      gsap.killTweensOf('.ad-disclosure');
-
-      // Возвращаем маркировку в скрытое состояние
-      gsap.set('.ad-disclosure', {
-          opacity: 0
-      });
 
       // 09. ПОКАЧИВАНИЕ ТОВАРОВ ПОСЛЕ ФИНАЛЬНОГО КАДРА.
       // Скролл запускает короткую волну слева направо.
@@ -556,12 +537,7 @@
       // 10. УПРАВЛЕНИЕ СКРОЛЛОМ И СВАЙПАМИ (включая iframe-сообщения).
       function advance() {
         const now = performance.now();
-        if (busy) {
-          // Запоминаем один скролл, пришедший во время перехода.
-          queuedStep = true;
-          return;
-        }
-        if (now - lastActionTime < MOTION.actionCooldown) return;
+        if (busy || now - lastActionTime < MOTION.actionCooldown) return;
         lastActionTime = now;
         goToNextStage();
       }
@@ -586,16 +562,12 @@
         stage = 0;
         busy = false;
         scrollAcc = 0;
-        queuedStep = false;
         lastActionTime = 0;
         bar.classList.remove('story-started', 'pulse');
         tag.textContent = '';
         tag.classList.remove('final');
         cta.classList.remove('visible');
         Object.values(products).forEach(el => el.classList.remove('visible'));
-        // Сбрасываем рекламную маркировку вместе с остальной анимацией.
-        gsap.killTweensOf('.ad-disclosure');
-        gsap.set('.ad-disclosure', { opacity: 0 });
         initialize();
       }
       window.addEventListener('wheel', processWheel, {passive:true});
