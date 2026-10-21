@@ -356,8 +356,8 @@
         tagEase: 'back.out(1.35)',
         logoDuration: 0.85,
         ribbonDuration: 0.85,
-        scrollThreshold: 52,
-        actionCooldown: 540
+        scrollThreshold: 20,
+        actionCooldown: 160
       };
 
       // 03. КООРДИНАТЫ И РАЗМЕРЫ — каждый кадр и устройство.
@@ -387,6 +387,10 @@
 
       let stage = 0;
       let busy = false;
+      let pendingStep = false;
+      let pendingTimer = null;
+      let wheelGestureUsed = false;
+      let wheelDirection = 0;
       let lastActionTime = 0;
       let lastWheelTime = 0;
       let scrollAcc = 0;
@@ -397,7 +401,7 @@
       let hoverTimeline = null;
       let swayTimeline = null;
 
-      function isMobile() { return window.innerWidth <= 720; }
+      function isMobile() { return window.innerWidth <= 600; }
       function coordinates(step) { return FRAMES[isMobile() ? 'mobile' : 'desktop'][step]; }
       function fit() { scene.style.setProperty('--scale', Math.min(1, window.innerWidth / 300)); }
 
@@ -478,7 +482,7 @@
         stage = next;
         busy = true;
         bar.classList.add('story-started');
-        const tl = gsap.timeline({onComplete:() => {busy = false; currentTimeline = null;}});
+        const tl = gsap.timeline({onComplete:() => {busy = false; currentTimeline = null; flushPendingStep();}});
         currentTimeline = tl;
 
         if (next === 1) {
@@ -508,13 +512,6 @@
         });
         addTagTransition(tl, next, .12);
       }
-      // Останавливаем анимацию маркировки
-      gsap.killTweensOf('.ad-disclosure');
-
-      // Возвращаем маркировку в скрытое состояние
-      gsap.set('.ad-disclosure', {
-          opacity: 0
-      });
 
       // 09. ПОКАЧИВАНИЕ ТОВАРОВ ПОСЛЕ ФИНАЛЬНОГО КАДРА.
       // Скролл запускает короткую волну слева направо.
@@ -523,8 +520,8 @@
       function playProductSway() {
         if (stage < 4) return;
 
-        // При повторном скролле начинаем волну заново, без накопления угла.
-        if (swayTimeline) swayTimeline.kill();
+        // Даем начатой волне завершиться без обрыва и сброса угла.
+        if (swayTimeline && swayTimeline.isActive()) return;
         const order = [products.thermo, products.mousse, products.wax, products.spray];
         gsap.killTweensOf(order, 'rotation');
         gsap.set(order, {rotation: 0, transformOrigin: '50% 100%'});
@@ -546,24 +543,49 @@
 
       // 10. УПРАВЛЕНИЕ СКРОЛЛОМ И СВАЙПАМИ (включая iframe-сообщения).
       function advance() {
-        const now = performance.now();
-        if (busy || now - lastActionTime < MOTION.actionCooldown) return;
-        lastActionTime = now;
+        // Активную волну не прерываем и не ставим повторные волны в очередь.
+        if (!busy && stage >= 4 && swayTimeline && swayTimeline.isActive()) return;
+        pendingStep = true;
+        flushPendingStep();
+      }
+      function flushPendingStep() {
+        if (!pendingStep || busy) return;
+        clearTimeout(pendingTimer);
+        const remaining = MOTION.actionCooldown - (performance.now() - lastActionTime);
+        if (remaining > 0) {
+          pendingTimer = setTimeout(flushPendingStep, remaining + 1);
+          return;
+        }
+        pendingStep = false;
+        lastActionTime = performance.now();
         goToNextStage();
       }
       function processWheel(e) {
         if (e.ctrlKey || !e.deltaY) return;
         const now = performance.now();
-        if (now - lastWheelTime > 190) scrollAcc = 0;
+        const direction = Math.sign(e.deltaY);
+        // Непрерывный поток wheel, включая инерционный хвост, дает один шаг.
+        if (now - lastWheelTime > 180 || direction !== wheelDirection) {
+          scrollAcc = 0;
+          wheelGestureUsed = false;
+        }
         lastWheelTime = now;
+        wheelDirection = direction;
+        if (wheelGestureUsed) return;
         const factor = e.deltaMode === 1 ? 16 : e.deltaMode === 2 ? window.innerHeight : 1;
         scrollAcc += Math.abs(e.deltaY) * factor;
         if (scrollAcc >= MOTION.scrollThreshold) {
+          wheelGestureUsed = true;
           scrollAcc = 0;
           advance();
         }
       }
       function reset() {
+        clearTimeout(pendingTimer);
+        pendingStep = false;
+        wheelGestureUsed = false;
+        wheelDirection = 0;
+        lastWheelTime = 0;
         if (currentTimeline) currentTimeline.kill();
         if (hoverTimeline) hoverTimeline.kill();
         if (swayTimeline) swayTimeline.kill();
@@ -578,7 +600,6 @@
         tag.classList.remove('final');
         cta.classList.remove('visible');
         Object.values(products).forEach(el => el.classList.remove('visible'));
-        // Сбрасываем рекламную маркировку вместе с остальной анимацией.
         gsap.killTweensOf('.ad-disclosure');
         gsap.set('.ad-disclosure', { opacity: 0 });
         initialize();
@@ -600,11 +621,18 @@
         if (touchY === null || touchDone) return;
         const dy = touchY - e.touches[0].clientY;
         const dx = touchX - e.touches[0].clientX;
-        if (Math.abs(dx) > Math.abs(dy) || Math.abs(dy) < 28) return;
+        if (Math.abs(dx) > Math.abs(dy) || Math.abs(dy) < 24) return;
         touchDone = true;
         advance();
       }, {passive:true});
-      window.addEventListener('touchend', () => {touchY=null; touchX=null;}, {passive:true});
+      window.addEventListener('touchend', e => {
+        const t = e.changedTouches[0];
+        if (!touchDone && touchY !== null && t) {
+          const dy = touchY - t.clientY, dx = touchX - t.clientX;
+          if (Math.abs(dy) >= 24 && Math.abs(dy) > Math.abs(dx)) advance();
+        }
+        touchY=null; touchX=null;
+      }, {passive:true});
       window.addEventListener('touchcancel', () => {touchY=null; touchX=null;}, {passive:true});
 
       // 11. НАВЕДЕНИЕ: две пульсации, без скачка в конце.
@@ -632,7 +660,10 @@
       });*/
 
       // 13. ИЗМЕНЕНИЕ РАЗМЕРА ЭКРАНА — синхронизация координат без перезапуска истории.
+      let layoutWidth = window.innerWidth;
       window.addEventListener('resize', () => {
+        if (window.innerWidth === layoutWidth) return;
+        layoutWidth = window.innerWidth;
         fit();
         if (stage < 1) return;
         const frame = coordinates(stage);
