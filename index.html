@@ -163,7 +163,7 @@
   window.addEventListener('wheel', e => {
     const factor = e.deltaMode === 1 ? 16 : e.deltaMode === 2 ? innerHeight : 1;
     // Усиливаем только сигнал десктопной прокрутки для порога внутри баннера.
-    send('ollin-wheel', {deltaY: e.deltaY * factor * 2.5});
+    send('ollin-wheel', {deltaY: e.deltaY * factor});
   }, {passive: true});
 
   // Один вертикальный жест = не более одного сигнала.
